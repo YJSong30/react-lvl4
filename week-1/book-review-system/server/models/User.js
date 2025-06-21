@@ -1,5 +1,4 @@
 import mongoose, { Schema, model } from "mongoose";
-import { use } from "react";
 
 const userSchema = new Schema(
   {
@@ -13,6 +12,7 @@ const userSchema = new Schema(
         author: String,
       },
     ],
+    password: String,
   },
   {
     timestamps: true,

@@ -20,6 +20,7 @@ function BookDetails() {
       rating: parseInt(rating, 10), // Convert rating to an integer
       comment,
     };
+
     try {
       const response = await fetch(reviewSubmitEndpoint, {
         method: "POST",
@@ -28,9 +29,11 @@ function BookDetails() {
         },
         body: JSON.stringify(reviewData),
       });
+
       if (!response.ok) {
         throw new Error("Failed to submit review");
       }
+
       const newReview = await response.json();
       setReviews((prevReviews) => [...prevReviews, newReview]); // Update the reviews state with the new review
     } catch (error) {
@@ -42,8 +45,8 @@ function BookDetails() {
     const fetchBookDetails = async () => {
       try {
         const [bookRes, reviewRes] = await Promise.all([
-          fetch(endpoint.replace(":id", id)),
-          fetch(reviewEndpoint.replace(":id", id)),
+          fetch(endpoint.replace(":id", id)), // fetch("http://localhost:3000/books/123") = get book details
+          fetch(reviewEndpoint.replace(":id", id)), // fetch("http://localhost:3000/books/123/reviews") = get ONLY reviews for book 123
         ]);
 
         if (!bookRes.ok || !reviewRes.ok) {
@@ -55,7 +58,7 @@ function BookDetails() {
           reviewRes.json(),
         ]);
 
-        console.log("Book data:", bookData);
+        // console.log("Book data:", bookData);
         setBook(bookData); // Set the book details in state
         setReviews(reviewData);
       } catch (error) {
@@ -111,8 +114,8 @@ function BookDetails() {
                         review.rating >= 4
                           ? "green"
                           : review.rating >= 2
-                          ? "orange"
-                          : "red",
+                            ? "orange"
+                            : "red",
                     }}
                   >
                     {review.rating}

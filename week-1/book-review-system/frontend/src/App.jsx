@@ -23,8 +23,16 @@ function App() {
   }, []);
   return (
     <div className="container text-center">
-      <h1 className="m-5">Book Review System</h1>
-      <Link class="btn btn-primary" to="/add-book">
+      <div className="">
+        <h1 className="m-5">Book Review System</h1>
+        <Link className="btn btn-primary mx-2 my-2" to="/login">
+          Log In
+        </Link>
+        <Link className="btn btn-primary mx-2 my-2" to="/signup">
+          Sign Up
+        </Link>
+      </div>
+      <Link className="btn btn-primary" to="/add-book">
         Add book
       </Link>
       <h2 className="m-5">Book List</h2>

@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import { Book } from "./models/Book.js"; // Adjust the path as necessary
 import { Review } from "./models/Review.js"; // Adjust the path as necessary
 import cors from "cors";
+import { User } from "./models/User.js";
+import bcrypt from "bcrypt";
 
 const app = express();
 app.use(express.json());
@@ -64,6 +66,72 @@ app.post("/reviews", async (req, res) => {
     const review = new Review(req.body);
     await review.save();
     res.status(201).json(review);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.post("/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(400).json({ error: "invalid email or password" });
+    }
+
+    const isValidPassword = await bcrypt.compare(password, user.password || "");
+    if (!isValidPassword) {
+      return res.status(400).json({ error: "invalid email or password" });
+    }
+
+    res.status(200).json({
+      message: "Login successful",
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        interests: user.interests,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.post("/signup", async (req, res) => {
+  try {
+    const { username, password, interests } = req.body;
+
+    if (!username && !password) {
+      return res.status(400).json({ error: "unable to create account" });
+    }
+
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(400).json({ error: "email already exists " });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = new User({
+      username,
+      password: hashedPassword,
+      interests,
+    });
+
+    await user.save();
+
+    res.status(201).json({
+      message: "user created successfully",
+      user: {
+        _id: user._id,
+        username: user.username,
+        password: user.password,
+        email: user.email,
+        interests: user.interests,
+      },
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
