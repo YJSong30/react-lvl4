@@ -15,11 +15,14 @@ function AddBook() {
     };
     console.log(bookData);
 
+    const token = localStorage.getItem("token");
+
     try {
       const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(bookData),
       });

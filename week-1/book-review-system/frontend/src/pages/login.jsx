@@ -36,8 +36,11 @@ export default function Login() {
         return;
       }
 
-      console.log("Login successful:", data);
+      console.log("login successful:", data);
+
+      localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
+
       navigate("/");
     } catch (error) {
       console.error("Login error:", error);
